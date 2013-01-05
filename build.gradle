@@ -1,0 +1,45 @@
+apply plugin: 'scala'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+def jdkVersion = 1.6
+
+sourceCompatibility = jdkVersion
+targetCompatibility = jdkVersion
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+dependencies {
+  scalaTools 'org.scala-lang:scala-compiler:2.10.0'
+
+  compile 'org.scala-lang:scala-library:2.10.0'
+  testCompile 'org.scalatest:scalatest_2.10.0:1.8'
+}
+
+tasks.withType(ScalaCompile) {
+  scalaCompileOptions.useAnt = false
+}
+
+test.ignoreFailures = true
+test.doFirst {
+  ant.taskdef(name: 'scalatest', classname: 'org.scalatest.tools.ScalaTestAntTask', classpath: classpath.asPath)
+  ant.scalatest(runpath: testClassesDir, fork: 'false') {
+    reporter(type: 'junitxml', directory: 'build/test-results')
+  }
+}
+
+idea.project.ipr {
+  withXml { provider ->
+    def map = provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping
+    map.@vcs = 'Git'
+    map.@directory = project.properties.projectDir
+  }
+}
+
+task "create-dirs" << {
+  sourceSets*.scala.srcDirs*.each { it.mkdirs() }
+  sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
