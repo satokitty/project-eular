@@ -1,4 +1,4 @@
-package satokitty.projecteular
+package org.projecteular
 
 import org.scalatest.FunSuite
 
