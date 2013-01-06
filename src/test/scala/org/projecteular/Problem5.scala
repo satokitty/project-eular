@@ -22,17 +22,17 @@ class Problem5 extends FunSuite {
   /*
    * nums must be orderd by desc.
    */
-  def lcd(nums: Seq[Long]): Long = nums match {
+  def lcm(nums: Seq[Long]): Long = nums match {
     case a::Nil => a
     case _ => nums.tail.foldLeft(nums.head)((m, n) => m * n / gcd(m, n))
   }
 
   test("sample") {
-    assert(lcd((1L to 10L).reverse) === 2520)
+    assert(lcm((1L to 10L).reverse) === 2520)
   }
 
   test("solution") {
-    val n = lcd((1L to 20L).reverse)
+    val n = lcm((1L to 20L).reverse)
     (1 to 20).foreach(i => { println(i); assert((n % i) === 0)})
     println("answer is " + n)
   }
